@@ -4,12 +4,12 @@ defmodule DigiCoin.Router do
   """
 
   use Plug.Router
-
   require Logger
+  alias DigiCoin.Clients.Bot
 
   @facebook_chat_bot Application.get_env(:digi_coin, :facebook_chat_bot)
   @webhook_verify_token @facebook_chat_bot.webhook_verify_token
-  alias DigiCoin.Clients.Bot
+
   plug(Plug.Logger)
   plug(:match)
   plug(Plug.Parsers, parsers: [:json], pass: ["application/json"], json_decoder: Jason)
@@ -23,7 +23,7 @@ defmodule DigiCoin.Router do
     )
 
     body_params = conn.body_params
-    Bot.webhook_post(body_params)
+    Bot.webhook_post(body_params) |> IO.inspect(label: "resp")
 
     conn
     |> put_resp_content_type("application/json")

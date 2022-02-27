@@ -40,7 +40,7 @@ defmodule DigiCoin.Clients.Bot do
         {:ok, response.body}
 
       {:error, error} ->
-        error
+        {:enoprofile, error}
     end
   end
 end

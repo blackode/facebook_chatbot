@@ -29,8 +29,8 @@ defmodule DigiCoin.MixProject do
       {:tesla, "~> 1.4"},
       {:gun, "~> 1.3"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.0"},
       {:castore, "~> 0.1"},
+      {:plug_cowboy, "~> 2.0"},
       {:ex_machina, "~> 2.7.0", only: :test}
     ]
   end

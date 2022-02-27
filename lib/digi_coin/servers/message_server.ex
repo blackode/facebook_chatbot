@@ -22,14 +22,19 @@ defmodule DigiCoin.Servers.MessageServer do
 
   @impl true
   def handle_call({:handle_message, _message, event}, _from, state) do
-    with {:ok, profile} <- Bot.get_profile(event),
-         first_name <- Map.get(profile, "first_name") do
-      welcome_message = Message.welcome_message(first_name)
-      reply = Message.get_text_payload(event, welcome_message)
-      {:reply, reply, state}
-    else
-      _ ->
-        {:reply, {:error, "something went wrong :) We are fixing."}, state}
-    end
+    reply = 
+      with {:ok, profile} <- Bot.get_profile(event),
+           {:ok, first_name} <- Map.fetch(profile, "first_name") do
+        welcome_message = Message.welcome_message(first_name)
+        Message.get_text_payload(event, welcome_message)
+      else
+        {:enoprofile, _error} ->
+          {:error, "ERROR: No profile found!"}
+        :error ->
+          {:error, "ERROR: Fetching first_name"}
+        _ ->
+          {:error, "Something went wrong :). Fixing under process :)"}
+      end
+    {:reply, reply, state}
   end
 end

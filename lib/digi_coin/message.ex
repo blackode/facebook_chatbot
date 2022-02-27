@@ -72,8 +72,8 @@ defmodule DigiCoin.Message do
       {:ok, body} ->
         body
 
-      _ ->
-        get_text_payload(event, "Unable to Process the request")
+      {:error, reason} ->
+        get_text_payload(event, "#{reason}")
     end
   end
 end
