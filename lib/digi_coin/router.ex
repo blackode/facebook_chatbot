@@ -16,6 +16,12 @@ defmodule DigiCoin.Router do
   plug(:dispatch)
 
   post "/digi_coin/webhook" do
+    IO.inspect(:hello,
+      label: "<---------- [:hello] ---------->",
+      limit: :infinity,
+      printable_limit: :infinity
+    )
+
     body_params = conn.body_params
     Bot.webhook_post(body_params)
 
@@ -32,7 +38,6 @@ defmodule DigiCoin.Router do
       conn
       |> put_resp_content_type("application/json")
       |> resp(200, query_params["hub.challenge"])
-      |> IO.inspect(label: "After preparing respnose")
       |> send_resp()
     else
       conn
@@ -49,12 +54,6 @@ defmodule DigiCoin.Router do
   end
 
   defp valid_webhook_token?(query_params) do
-    IO.inspect(query_params,
-      label: "<---------- [query_params] ---------->",
-      limit: :infinity,
-      printable_limit: :infinity
-    )
-
     mode = query_params["hub.mode"]
     token = query_params["hub.verify_token"]
 
