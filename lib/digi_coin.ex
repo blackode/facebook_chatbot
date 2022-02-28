@@ -1,18 +1,20 @@
 defmodule DigiCoin do
   @moduledoc """
-  Documentation for `DigiCoin`.
+   Main Entry for Events where redirect based on the event category
   """
+  alias DigiCoin.Message
 
-  @doc """
-  Hello world.
+  def handle_event(event) do
+    case Message.get_messaging(event) do
+      %{"message" => message} -> 
+        Message.handle_message(message, event)
 
-  ## Examples
-
-      iex> DigiCoin.hello()
-      :world
-
-  """
-  def hello do
-    :world
+      %{"postback" => postback} -> 
+        Message.handle_postback(postback, event)
+        
+      _ ->
+        error_template = DigiCoin.Template.text(event, "Something went wrong. Our Engineers are working on it.")
+        DigiCoin.Clients.Bot.webhook_post(error_template)
+    end
   end
 end

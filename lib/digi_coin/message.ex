@@ -18,6 +18,8 @@ defmodule DigiCoin.Message do
   @type event() :: map()
 
   alias DigiCoin.Servers.MessageServer
+  alias DigiCoin.Template
+  alias DigiCoin.Clients.Bot
 
   @spec get_message(event) :: message()
   def get_message(event) do
@@ -45,7 +47,6 @@ defmodule DigiCoin.Message do
 
   def get_text_payload(event, text) do
     %{
-      "messaging_type" => "",
       "recipient" => %{
         "id" => get_sender(event)["id"]
       },
@@ -65,15 +66,22 @@ defmodule DigiCoin.Message do
     welcome_message(first_name)
   end
 
-  def handle_event(event) do
-    message = get_message(event)
+  def handle_message(message, event) do
+    {:ok, body} = MessageServer.handle_message(message, event)
+    Bot.webhook_post(body)
 
-    case MessageServer.handle_message(message, event) do
-      {:ok, body} ->
-        body
+    buttons = [
+      {:postback, "Coin Id", "coin_search_by_id"},
+      {:postback, "Coin Name", "coin_search_by_name"}
+    ]
+    template_title = "How do you want search coins?"
+    select_coin_search_template = Template.buttons(event, template_title, buttons)
 
-      {:error, reason} ->
-        get_text_payload(event, "#{reason}")
-    end
+    Bot.webhook_post(select_coin_search_template)
+  end
+
+  def handle_postback(postback, event) do
+    {:ok, body} = MessageServer.handle_postback(postback, event)
+    Bot.webhook_post(body)
   end
 end

@@ -5,7 +5,6 @@ defmodule DigiCoin.Router do
 
   use Plug.Router
   require Logger
-  alias DigiCoin.Clients.Bot
 
   @facebook_chat_bot Application.get_env(:digi_coin, :facebook_chat_bot)
   @webhook_verify_token @facebook_chat_bot.webhook_verify_token
@@ -16,15 +15,7 @@ defmodule DigiCoin.Router do
   plug(:dispatch)
 
   post "/digi_coin/webhook" do
-    IO.inspect(:hello,
-      label: "<---------- [:hello] ---------->",
-      limit: :infinity,
-      printable_limit: :infinity
-    )
-
-    body_params = conn.body_params
-    Bot.webhook_post(body_params) |> IO.inspect(label: "resp")
-
+    DigiCoin.handle_event(conn.body_params)
     conn
     |> put_resp_content_type("application/json")
     |> resp(200, Jason.encode!(%{status: "ok"}))

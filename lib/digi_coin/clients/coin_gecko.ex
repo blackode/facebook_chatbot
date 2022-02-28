@@ -10,14 +10,11 @@ defmodule DigiCoin.Clients.CoinGecko do
 
   @client_config Application.compile_env!(:digi_coin, :coin_gecko)
 
-  alias DigiCoin.Message
-
   plug(Tesla.Middleware.BaseUrl, @client_config.base_url)
   plug(Tesla.Middleware.JSON, engine: Jason)
 
-  def search(event) do
-    text = Message.get_message(event)["text"]
-    request_path = "search?query=#{text}"
+  def search(query) do
+    request_path = "search?query=#{query}"
 
     case get(request_path) do
       {:ok, response} ->
@@ -28,11 +25,15 @@ defmodule DigiCoin.Clients.CoinGecko do
     end
   end
 
-  def coin_market_chart(event) do
-    id = Message.get_message(event)["text"]
-    request_path = "coins/#{id}/market_chart/?vs_currency=usd&days=14&interval=daily"
+  def coin_market_chart(id) do
+    request_path = "coins/#{id}/market_chart"
+    query_params = %{
+      "vs_currency" => "usd",
+      "interval" => "daily",
+      "days" => 14
+    }
 
-    case get(request_path) do
+    case get(request_path, query: query_params) do
       {:ok, response} ->
         response.body
 

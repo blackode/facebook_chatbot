@@ -18,9 +18,7 @@ defmodule DigiCoin.Clients.Bot do
   plug(Tesla.Middleware.JSON, engine: Jason)
 
   @impl true
-  def webhook_post(event) do
-    body = Message.handle_event(event)
-
+  def webhook_post(body) do
     request_path = "v13.0/me/messages"
 
     case post(request_path, body) do
@@ -43,4 +41,5 @@ defmodule DigiCoin.Clients.Bot do
         {:enoprofile, error}
     end
   end
+
 end
