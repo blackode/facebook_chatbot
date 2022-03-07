@@ -62,7 +62,7 @@ To list all commands:
 
 Running Interactively
 
-# Receiving Transaction Updates as Webhooks
+# Receiving Updates as Webhooks
 
 ## Expose a local web server to the internet
 
