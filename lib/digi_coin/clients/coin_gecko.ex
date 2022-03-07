@@ -2,9 +2,7 @@ defmodule DigiCoin.Clients.CoinGecko do
   use Tesla, only: [:post, :get], docs: false
 
   @moduledoc """
-  Interface to communicate with Slack through a webhook
-
-  Ideally the client_config will return api keys or anything else to custommize the request.
+  Interface to communicate with CoinGecko API
   """
   require Logger
 
