@@ -1,4 +1,4 @@
-# Welcome MindValley DigiCoin
+# Welcome FaceBook Chat Bot
 
 ![Project Out Line Image](assets/digi_coin_header.jpg)
 
@@ -56,7 +56,6 @@ To list all commands:
     releases/bin/digi_coin
 
 ```
-
 
 #### iex -S mix
 
